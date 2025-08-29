@@ -21,7 +21,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                 repository: danielga/garrysmod_common
-                ref: 63bd98014b342d4250ce365ad856f9132ee7c11e
+                ref: gcc-build/12.3.0
                 path: garrysmod_common
                 fetch-depth: 1
                 submodules: recursive
@@ -68,7 +68,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   repository: danielga/garrysmod_common
-                  ref: 63bd98014b342d4250ce365ad856f9132ee7c11e
+                  ref: gcc-build/12.3.0
                   path: garrysmod_common
                   fetch-depth: 1
                   submodules: recursive
