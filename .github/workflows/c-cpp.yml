@@ -20,11 +20,11 @@ jobs:
             - name: Checkout garrysmod_common (pinned)
               uses: actions/checkout@v4
               with:
-                repository: danielga/garrysmod_common
-                ref: gcc-build/12.3.0
-                path: garrysmod_common
-                fetch-depth: 1
-                submodules: recursive
+                  repository: danielga/garrysmod_common
+                  ref: gcc-build/12.3.0
+                  path: garrysmod_common
+                  fetch-depth: 1
+                  submodules: recursive
 
             - name: Install Premake & dépendances
               run: |
