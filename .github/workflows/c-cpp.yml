@@ -17,23 +17,29 @@ jobs:
             - name: Checkout main repo
               uses: actions/checkout@v4
 
-            - name: Checkout garrysmod_common (pinned)
+            - name: Checkout garrysmod_common (64-bit support branch)
               uses: actions/checkout@v4
               with:
                   repository: danielga/garrysmod_common
-                  ref: gcc-build/12.3.0
+                  ref: x86-64-support-sourcesdk
                   path: garrysmod_common
                   fetch-depth: 1
                   submodules: recursive
 
             - name: Install Premake & dépendances
               run: |
-                  wget https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-linux.tar.gz -O premake.tar.gz
-                  tar -xzf premake.tar.gz
-                  chmod +x premake5
-                  sudo mv premake5 /usr/local/bin/
+                  # Install dependencies
                   sudo apt-get update
-                  sudo apt-get install -y g++-multilib
+                  sudo apt-get install -y g++-multilib uuid-dev git make
+
+                  # Build Premake beta4 from source (for linktimeoptimization support)
+                  git clone --depth 1 --branch v5.0.0-beta4 https://github.com/premake/premake-core.git premake-src
+                  cd premake-src
+                  make -f Bootstrap.mak linux
+                  sudo mv bin/release/premake5 /usr/local/bin/
+                  cd ..
+                  rm -rf premake-src
+
                   gcc --version
 
             - name: Génération du projet avec Premake
@@ -64,18 +70,18 @@ jobs:
             - name: Checkout main repo
               uses: actions/checkout@v4
 
-            - name: Checkout garrysmod_common (pinned)
+            - name: Checkout garrysmod_common (64-bit support branch)
               uses: actions/checkout@v4
               with:
                   repository: danielga/garrysmod_common
-                  ref: gcc-build/12.3.0
+                  ref: x86-64-support-sourcesdk
                   path: garrysmod_common
                   fetch-depth: 1
                   submodules: recursive
 
             - name: Install Premake
               run: |
-                  curl -L https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip -o premake.zip
+                  curl -L https://github.com/premake/premake-core/releases/download/v5.0.0-beta4/premake-5.0.0-beta4-windows.zip -o premake.zip
                   Expand-Archive premake.zip -DestinationPath premake
 
             - name: Add Premake to PATH
@@ -154,6 +160,12 @@ jobs:
                   name: v${{ github.run_number }}
                   body: |
                       Voice Recorder Module - Build ${{ github.run_number }}
+
+                      **Available platforms:**
+                      - Linux 32-bit (gmsv_eightbit_linux.dll)
+                      - Linux 64-bit (gmsv_eightbit_linux64.dll) 
+                      - Windows 32-bit (gmsv_eightbit_win32.dll) 
+                      - Windows 64-bit (gmsv_eightbit_win64.dll)
 
                       Download the appropriate DLL for your platform and place it in garrysmod/lua/bin/
                   files: |
